@@ -3,7 +3,7 @@ import { useSignals } from "@preact/signals-react/runtime";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Plus } from "lucide-react";
-import { addAnswer } from "@/store/surveyStore";
+import { addAnswer } from "@/store";
 
 interface AnswerFormProps {
   questionId: string;

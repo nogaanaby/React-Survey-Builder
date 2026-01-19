@@ -26,7 +26,7 @@ import {
   addQuestion,
   updateQuestion,
   getQuestionById,
-} from "@/store/surveyStore";
+} from "@/store";
 
 const questionText = signal("");
 const questionType = signal<"single" | "multiple">("single");

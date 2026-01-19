@@ -1,154 +1,81 @@
-import { signal, computed } from "@preact/signals-react";
+import { signal, computed, effect } from "@preact/signals-react";
+import type { Question, SurveyData } from "./types";
 
-// Types
-export interface Answer {
-  id: string;
-  text: string;
-}
+// Storage key
+const STORAGE_KEY = "survey-builder-data";
+const CURRENT_VERSION = 1;
 
-export interface Question {
-  id: string;
-  text: string;
-  type: "single" | "multiple";
-  answers: Answer[];
-}
+// Persistence functions
+const loadFromStorage = (): Question[] => {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (!stored) return [];
 
-export interface NewQuestion {
-  text: string;
-  type: "single" | "multiple";
-}
+    const data: SurveyData = JSON.parse(stored);
 
-// Generate unique IDs
-export const generateId = (): string => crypto.randomUUID();
+    // Version check for future migrations
+    if (data.version !== CURRENT_VERSION) {
+      console.warn("Survey data version mismatch, using stored data as-is");
+    }
 
-// Main survey state
-export const questions = signal<Question[]>([]);
+    return data.questions || [];
+  } catch (error) {
+    console.error("Failed to load survey data from storage:", error);
+    return [];
+  }
+};
 
-// UI state
-export const editingQuestionId = signal<string | null>(null);
-export const isQuestionDialogOpen = signal<boolean>(false);
+const saveToStorage = (questionsData: Question[]): void => {
+  try {
+    const data: SurveyData = {
+      questions: questionsData,
+      version: CURRENT_VERSION,
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data, null, 2));
+  } catch (error) {
+    console.error("Failed to save survey data to storage:", error);
+  }
+};
+
+// Main survey state - initialize from storage
+export const questions = signal<Question[]>(loadFromStorage());
+
+// Auto-save effect - saves whenever questions change
+effect(() => {
+  saveToStorage(questions.value);
+});
 
 // Computed values
 export const questionCount = computed(() => questions.value.length);
 
-// Question actions
-export const addQuestion = (question: NewQuestion): void => {
-  questions.value = [
-    ...questions.value,
-    {
-      id: generateId(),
-      text: question.text,
-      type: question.type,
-      answers: [],
-    },
-  ];
+// Data management actions
+export const exportSurveyData = (): string => {
+  const data: SurveyData = {
+    questions: questions.value,
+    version: CURRENT_VERSION,
+  };
+  return JSON.stringify(data, null, 2);
 };
 
-export const updateQuestion = (
-  questionId: string,
-  updates: Partial<Pick<Question, "text" | "type">>
-): void => {
-  questions.value = questions.value.map((q) =>
-    q.id === questionId ? { ...q, ...updates } : q
-  );
+export const importSurveyData = (jsonString: string): boolean => {
+  try {
+    const data: SurveyData = JSON.parse(jsonString);
+    if (!Array.isArray(data.questions)) {
+      throw new Error("Invalid survey data format");
+    }
+    questions.value = data.questions;
+    return true;
+  } catch (error) {
+    console.error("Failed to import survey data:", error);
+    return false;
+  }
 };
 
-export const deleteQuestion = (questionId: string): void => {
-  questions.value = questions.value.filter((q) => q.id !== questionId);
+export const clearSurveyData = (): void => {
+  questions.value = [];
 };
 
-export const reorderQuestions = (activeId: string, overId: string): void => {
-  const oldIndex = questions.value.findIndex((q) => q.id === activeId);
-  const newIndex = questions.value.findIndex((q) => q.id === overId);
-
-  if (oldIndex === -1 || newIndex === -1) return;
-
-  const newQuestions = [...questions.value];
-  const [removed] = newQuestions.splice(oldIndex, 1);
-  newQuestions.splice(newIndex, 0, removed);
-
-  questions.value = newQuestions;
-};
-
-// Answer actions
-export const addAnswer = (questionId: string, answerText: string): void => {
-  questions.value = questions.value.map((q) =>
-    q.id === questionId
-      ? {
-          ...q,
-          answers: [...q.answers, { id: generateId(), text: answerText }],
-        }
-      : q
-  );
-};
-
-export const updateAnswer = (
-  questionId: string,
-  answerId: string,
-  newText: string
-): void => {
-  questions.value = questions.value.map((q) =>
-    q.id === questionId
-      ? {
-          ...q,
-          answers: q.answers.map((a) =>
-            a.id === answerId ? { ...a, text: newText } : a
-          ),
-        }
-      : q
-  );
-};
-
-export const deleteAnswer = (questionId: string, answerId: string): void => {
-  questions.value = questions.value.map((q) =>
-    q.id === questionId
-      ? {
-          ...q,
-          answers: q.answers.filter((a) => a.id !== answerId),
-        }
-      : q
-  );
-};
-
-export const reorderAnswers = (
-  questionId: string,
-  activeId: string,
-  overId: string
-): void => {
-  const question = questions.value.find((q) => q.id === questionId);
-  if (!question) return;
-
-  const oldIndex = question.answers.findIndex((a) => a.id === activeId);
-  const newIndex = question.answers.findIndex((a) => a.id === overId);
-
-  if (oldIndex === -1 || newIndex === -1) return;
-
-  const newAnswers = [...question.answers];
-  const [removed] = newAnswers.splice(oldIndex, 1);
-  newAnswers.splice(newIndex, 0, removed);
-
-  questions.value = questions.value.map((q) =>
-    q.id === questionId ? { ...q, answers: newAnswers } : q
-  );
-};
-
-// Dialog actions
-export const openAddQuestionDialog = (): void => {
-  editingQuestionId.value = null;
-  isQuestionDialogOpen.value = true;
-};
-
-export const openEditQuestionDialog = (questionId: string): void => {
-  editingQuestionId.value = questionId;
-  isQuestionDialogOpen.value = true;
-};
-
-export const closeQuestionDialog = (): void => {
-  editingQuestionId.value = null;
-  isQuestionDialogOpen.value = false;
-};
-
-// Get question by ID (helper)
-export const getQuestionById = (questionId: string): Question | undefined => {
-  return questions.value.find((q) => q.id === questionId);
+// Force save (useful for manual saves)
+export const forceSave = (): void => {
+  saveToStorage(questions.value);
 };

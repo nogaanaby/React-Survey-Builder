@@ -9,7 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { GripVertical, Pencil, Trash2, CircleDot, CheckSquare } from "lucide-react";
 import { AnswerList } from "./AnswerList";
-import { deleteQuestion, openEditQuestionDialog, type Question } from "@/store/surveyStore";
+import { deleteQuestion, openEditQuestionDialog, type Question } from "@/store";
 
 interface QuestionCardProps {
   question: Question;

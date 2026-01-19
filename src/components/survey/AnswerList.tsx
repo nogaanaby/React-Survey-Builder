@@ -15,7 +15,7 @@ import {
 import { RadioGroup } from "@/components/ui/radio-group";
 import { AnswerItem } from "./AnswerItem";
 import { AnswerForm } from "./AnswerForm";
-import { reorderAnswers, type Question } from "@/store/surveyStore";
+import { reorderAnswers, type Question } from "@/store";
 
 interface AnswerListProps {
   question: Question;

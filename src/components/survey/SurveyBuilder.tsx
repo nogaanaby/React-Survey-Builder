@@ -3,14 +3,15 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { QuestionList } from "./QuestionList";
 import { QuestionForm } from "./QuestionForm";
-import { openAddQuestionDialog, questionCount } from "@/store/surveyStore";
+import { JsonPreview } from "./JsonPreview";
+import { openAddQuestionDialog, questionCount } from "@/store";
 
 export function SurveyBuilder() {
   useSignals();
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="max-w-3xl mx-auto p-6">
+      <div className="max-w-7xl mx-auto p-6">
         <header className="mb-8">
           <div className="flex items-center justify-between">
             <div>
@@ -28,9 +29,15 @@ export function SurveyBuilder() {
           </div>
         </header>
 
-        <main>
-          <QuestionList />
-        </main>
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr,380px] gap-6">
+          <main>
+            <QuestionList />
+          </main>
+
+          <aside className="hidden lg:block">
+            <JsonPreview />
+          </aside>
+        </div>
 
         <QuestionForm />
       </div>

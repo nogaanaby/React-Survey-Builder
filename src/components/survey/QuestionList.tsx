@@ -14,7 +14,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { QuestionCard } from "./QuestionCard";
-import { questions, reorderQuestions } from "@/store/surveyStore";
+import { questions, reorderQuestions } from "@/store";
 
 export function QuestionList() {
   useSignals();

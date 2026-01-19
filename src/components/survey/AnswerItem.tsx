@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroupItem } from "@/components/ui/radio-group";
 import { GripVertical, Pencil, Trash2, Check, X } from "lucide-react";
-import { updateAnswer, deleteAnswer, type Answer } from "@/store/surveyStore";
+import { updateAnswer, deleteAnswer, type Answer } from "@/store";
 
 interface AnswerItemProps {
   answer: Answer;

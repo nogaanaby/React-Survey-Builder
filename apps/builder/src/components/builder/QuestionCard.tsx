@@ -3,6 +3,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Card } from "primereact/card";
 import { Button } from "primereact/button";
+import { Tag } from "primereact/tag";
 import type { Question } from "@survey/shared";
 import { AnswerList } from "./AnswerList";
 import { deleteQuestion, openEditQuestionDialog } from "@/store";
@@ -26,6 +27,13 @@ const typeIcons: Record<string, string> = {
   "rating-scale": "pi pi-star",
 };
 
+const answerTypeLabels: Record<string, string> = {
+  "radio": "Text",
+  "checkbox": "Text",
+  "dropdown": "Dropdown",
+  "image-choice": "Image",
+};
+
 export function QuestionCard({ question, index }: QuestionCardProps) {
   useSignals();
 
@@ -45,6 +53,7 @@ export function QuestionCard({ question, index }: QuestionCardProps) {
   };
 
   const hasAnswers = question.type === "single-choice" || question.type === "multiple-choice";
+  const isImageType = question.answerType === "image-choice";
 
   const title = (
     <div className="flex items-start gap-3">
@@ -57,7 +66,7 @@ export function QuestionCard({ question, index }: QuestionCardProps) {
       </button>
 
       <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2 mb-1">
+        <div className="flex items-center gap-2 mb-1 flex-wrap">
           <span className="text-sm font-medium text-gray-500">
             Q{index + 1}
           </span>
@@ -65,8 +74,16 @@ export function QuestionCard({ question, index }: QuestionCardProps) {
           <span className="text-xs text-gray-500">
             {typeLabels[question.type] || question.type}
           </span>
+          {hasAnswers && (
+            <Tag 
+              value={answerTypeLabels[question.answerType] || question.answerType}
+              severity={isImageType ? "info" : "secondary"}
+              className="text-xs"
+              icon={isImageType ? "pi pi-image" : "pi pi-align-left"}
+            />
+          )}
           {question.required && (
-            <span className="text-xs text-red-500 font-medium">Required</span>
+            <Tag value="Required" severity="danger" className="text-xs" />
           )}
         </div>
         <span className="text-lg font-semibold">{question.text}</span>

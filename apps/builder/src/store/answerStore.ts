@@ -2,10 +2,12 @@ import { generateId, type Answer } from "@survey/shared";
 import { survey } from "./surveyStore";
 
 // Answer actions
-export const addAnswer = (questionId: string, text: string): void => {
+export const addAnswer = (questionId: string, text: string, imageUrl?: string, description?: string): void => {
   const newAnswer: Answer = {
     id: generateId(),
     text,
+    description,
+    imageUrl,
   };
 
   survey.value = {
@@ -25,6 +27,7 @@ export const addAnswer = (questionId: string, text: string): void => {
   };
 };
 
+// Update answer text only (backward compatible)
 export const updateAnswer = (
   questionId: string,
   answerId: string,
@@ -39,6 +42,31 @@ export const updateAnswer = (
         ...q,
         answers: (q.answers || []).map((a) =>
           a.id === answerId ? { ...a, text } : a
+        ),
+      };
+    }),
+    metadata: {
+      ...survey.value.metadata,
+      updatedAt: new Date().toISOString(),
+    },
+  };
+};
+
+// Update answer with all fields
+export const updateAnswerFull = (
+  questionId: string,
+  answerId: string,
+  updates: Partial<Answer>
+): void => {
+  survey.value = {
+    ...survey.value,
+    questions: survey.value.questions.map((q) => {
+      if (q.id !== questionId) return q;
+      if (!("answers" in q)) return q;
+      return {
+        ...q,
+        answers: (q.answers || []).map((a) =>
+          a.id === answerId ? { ...a, ...updates } : a
         ),
       };
     }),

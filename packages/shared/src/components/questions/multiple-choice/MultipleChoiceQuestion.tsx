@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Checkbox } from "primereact/checkbox";
 import type { QuestionFormProps, MultipleChoiceQuestion as MultipleChoiceQuestionType } from "../../../types";
+import { ImageChoiceQuestion } from "../image-choice/ImageChoiceQuestion";
 
 export function MultipleChoiceQuestion({
   question,
@@ -10,6 +11,18 @@ export function MultipleChoiceQuestion({
 }: QuestionFormProps<string[]>) {
   const q = question as MultipleChoiceQuestionType;
   const selectedValues = value ?? [];
+
+  // Use ImageChoiceQuestion for image-choice answer type
+  if (q.answerType === "image-choice") {
+    return (
+      <ImageChoiceQuestion
+        question={question}
+        value={selectedValues}
+        onChange={onChange}
+        disabled={disabled}
+      />
+    );
+  }
 
   const handleToggle = (answerId: string, checked: boolean) => {
     if (checked) {

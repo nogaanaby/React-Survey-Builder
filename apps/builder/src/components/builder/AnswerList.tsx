@@ -12,10 +12,13 @@ import {
   SortableContext,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
+  rectSortingStrategy,
 } from "@dnd-kit/sortable";
 import type { Question, SingleChoiceQuestion, MultipleChoiceQuestion } from "@survey/shared";
 import { AnswerItem } from "./AnswerItem";
 import { AnswerForm } from "./AnswerForm";
+import { ImageAnswerItem } from "./ImageAnswerItem";
+import { ImageAnswerForm } from "./ImageAnswerForm";
 import { reorderAnswers } from "@/store";
 
 interface AnswerListProps {
@@ -42,7 +45,37 @@ export function AnswerList({ question }: AnswerListProps) {
   const q = question as SingleChoiceQuestion | MultipleChoiceQuestion;
   const answers = q.answers || [];
   const answerIds = answers.map((a) => a.id);
+  const isImageType = q.answerType === "image-choice";
 
+  if (isImageType) {
+    // Image answer layout - grid
+    return (
+      <div className="space-y-4">
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+        >
+          <SortableContext items={answerIds} strategy={rectSortingStrategy}>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+              {answers.map((answer) => (
+                <ImageAnswerItem
+                  key={answer.id}
+                  answer={answer}
+                  questionId={question.id}
+                  questionType={question.type}
+                />
+              ))}
+            </div>
+          </SortableContext>
+        </DndContext>
+
+        <ImageAnswerForm questionId={question.id} />
+      </div>
+    );
+  }
+
+  // Text answer layout - list
   return (
     <div className="space-y-2">
       <DndContext

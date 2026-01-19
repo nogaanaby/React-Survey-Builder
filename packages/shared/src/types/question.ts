@@ -4,6 +4,7 @@ import type { QuestionType, AnswerType } from "./base";
 export interface Answer {
   id: string;
   text: string;
+  description?: string;
   imageUrl?: string;
 }
 
@@ -20,7 +21,7 @@ export interface BaseQuestion {
 // Single choice question
 export interface SingleChoiceQuestion extends BaseQuestion {
   type: "single-choice";
-  answerType: "radio" | "dropdown";
+  answerType: "radio" | "dropdown" | "image-choice";
   answers: Answer[];
   config: {
     allowOther: boolean;
@@ -31,7 +32,7 @@ export interface SingleChoiceQuestion extends BaseQuestion {
 // Multiple choice question
 export interface MultipleChoiceQuestion extends BaseQuestion {
   type: "multiple-choice";
-  answerType: "checkbox";
+  answerType: "checkbox" | "image-choice";
   answers: Answer[];
   config: {
     minSelections?: number;

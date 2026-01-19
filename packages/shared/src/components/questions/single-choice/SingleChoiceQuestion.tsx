@@ -2,6 +2,7 @@ import * as React from "react";
 import { RadioButton } from "primereact/radiobutton";
 import { Dropdown } from "primereact/dropdown";
 import type { QuestionFormProps, SingleChoiceQuestion as SingleChoiceQuestionType } from "../../../types";
+import { ImageChoiceQuestion } from "../image-choice/ImageChoiceQuestion";
 
 export function SingleChoiceQuestion({
   question,
@@ -10,6 +11,18 @@ export function SingleChoiceQuestion({
   disabled,
 }: QuestionFormProps<string>) {
   const q = question as SingleChoiceQuestionType;
+
+  // Use ImageChoiceQuestion for image-choice answer type
+  if (q.answerType === "image-choice") {
+    return (
+      <ImageChoiceQuestion
+        question={question}
+        value={value}
+        onChange={onChange}
+        disabled={disabled}
+      />
+    );
+  }
 
   if (q.answerType === "dropdown") {
     const options = q.answers.map((answer) => ({

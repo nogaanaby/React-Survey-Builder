@@ -9,4 +9,5 @@ export { SingleChoiceQuestion, singleChoiceConfig } from "./single-choice";
 export { MultipleChoiceQuestion, multipleChoiceConfig } from "./multiple-choice";
 export { TextInputQuestion, textInputConfig } from "./text-input";
 export { RatingScaleQuestion, ratingScaleConfig } from "./rating-scale";
+export { ImageChoiceQuestion, imageChoiceConfig } from "./image-choice";
 export { BaseQuestion } from "./base";

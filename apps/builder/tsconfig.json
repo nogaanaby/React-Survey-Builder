@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@survey/shared": ["../../packages/shared/src"],
+      "@survey/shared/*": ["../../packages/shared/src/*"],
+      "@survey/builder-components": ["../../packages/builder-components/src"],
+      "@survey/builder-components/*": ["../../packages/builder-components/src/*"]
+    }
+  },
+  "include": ["src"]
+}

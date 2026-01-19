@@ -1,0 +1,1 @@
+export { BaseQuestion } from "./BaseQuestion";

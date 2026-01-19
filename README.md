@@ -1,16 +1,102 @@
-# React + Vite
+# Survey Platform
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A monorepo containing a survey builder and survey form applications.
 
-Currently, two official plugins are available:
+## Structure
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+```
+survey-platform/
+├── apps/
+│   ├── builder/          # Survey Builder app (@survey/builder)
+│   └── survey/           # Survey Form app (@survey/app)
+├── packages/
+│   ├── shared/           # Shared components & types (@survey/shared)
+│   └── builder-components/  # Builder-specific components (@survey/builder-components)
+└── tooling/              # Shared configs (future)
+```
 
-## React Compiler
+## Getting Started
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Prerequisites
 
-## Expanding the ESLint configuration
+- Node.js >= 18
+- pnpm >= 9.0.0
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Installation
+
+```bash
+# Install pnpm if you haven't
+npm install -g pnpm
+
+# Install dependencies
+pnpm install
+```
+
+### Development
+
+```bash
+# Run the builder app
+pnpm dev:builder
+
+# Run the survey app (in another terminal)
+pnpm dev:survey
+
+# Or run the default (builder)
+pnpm dev
+```
+
+### Build
+
+```bash
+# Build all apps
+pnpm build
+
+# Build specific app
+pnpm build:builder
+pnpm build:survey
+```
+
+## Packages
+
+### @survey/shared
+
+Shared library containing:
+- **Types**: Survey, Question, Answer, Response types
+- **Registry**: Question type registry for extensibility
+- **Components**: 
+  - UI components (Button, Input, Card, etc.)
+  - SurveyForm component
+  - Question type components (SingleChoice, MultipleChoice, TextInput, RatingScale)
+- **Validation**: Zod schemas for validation
+
+### @survey/builder-components
+
+Builder-specific components:
+- BaseQuestionBuilder
+- DragHandle, DeleteButton, EditButton
+- QuestionTypeSelector
+
+## Adding New Question Types
+
+1. Create a new folder in `packages/shared/src/components/questions/`
+2. Implement the form component
+3. Create the config file
+4. Register it in the index.ts
+
+Example:
+```typescript
+// packages/shared/src/components/questions/my-type/index.ts
+import { questionRegistry } from "../../../registry";
+import { myTypeConfig } from "./myType.config";
+
+questionRegistry.register(myTypeConfig);
+```
+
+## Architecture
+
+The platform uses:
+- **Preact Signals** for state management
+- **shadcn/ui** for UI components
+- **dnd-kit** for drag and drop
+- **Zod** for validation
+- **Tailwind CSS v4** for styling

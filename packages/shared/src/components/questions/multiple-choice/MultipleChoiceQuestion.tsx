@@ -1,7 +1,6 @@
 import * as React from "react";
+import { Checkbox } from "primereact/checkbox";
 import type { QuestionFormProps, MultipleChoiceQuestion as MultipleChoiceQuestionType } from "../../../types";
-import { Checkbox } from "../../ui/checkbox";
-import { Label } from "../../ui/label";
 
 export function MultipleChoiceQuestion({
   question,
@@ -12,27 +11,27 @@ export function MultipleChoiceQuestion({
   const q = question as MultipleChoiceQuestionType;
   const selectedValues = value ?? [];
 
-  const handleToggle = (answerId: string) => {
-    if (selectedValues.includes(answerId)) {
-      onChange(selectedValues.filter((v) => v !== answerId));
-    } else {
+  const handleToggle = (answerId: string, checked: boolean) => {
+    if (checked) {
       onChange([...selectedValues, answerId]);
+    } else {
+      onChange(selectedValues.filter((v) => v !== answerId));
     }
   };
 
   return (
-    <div className="space-y-2">
+    <div className="flex flex-col gap-3">
       {q.answers.map((answer) => (
-        <div key={answer.id} className="flex items-center space-x-3">
+        <div key={answer.id} className="flex items-center gap-3">
           <Checkbox
-            id={answer.id}
+            inputId={answer.id}
             checked={selectedValues.includes(answer.id)}
-            onCheckedChange={() => handleToggle(answer.id)}
+            onChange={(e) => handleToggle(answer.id, e.checked ?? false)}
             disabled={disabled}
           />
-          <Label htmlFor={answer.id} className="font-normal cursor-pointer">
+          <label htmlFor={answer.id} className="cursor-pointer">
             {answer.text}
-          </Label>
+          </label>
         </div>
       ))}
     </div>

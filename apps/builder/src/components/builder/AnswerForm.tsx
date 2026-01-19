@@ -1,7 +1,7 @@
 import { useSignal } from "@preact/signals-react";
 import { useSignals } from "@preact/signals-react/runtime";
-import { Button, Input } from "@survey/shared";
-import { Plus } from "lucide-react";
+import { InputText } from "primereact/inputtext";
+import { Button } from "primereact/button";
 import { addAnswer } from "@/store";
 
 interface AnswerFormProps {
@@ -26,18 +26,22 @@ export function AnswerForm({ questionId }: AnswerFormProps) {
   };
 
   return (
-    <div className="flex items-center gap-2 mt-2">
-      <Input
+    <div className="flex items-center gap-2 mt-3">
+      <InputText
         placeholder="Add new answer..."
         value={newAnswerText.value}
         onChange={(e) => (newAnswerText.value = e.target.value)}
         onKeyDown={handleKeyDown}
-        className="h-9"
+        className="flex-1"
       />
-      <Button size="sm" onClick={handleAdd} disabled={!newAnswerText.value.trim()}>
-        <Plus className="h-4 w-4 mr-1" />
-        Add
-      </Button>
+      <Button
+        label="Add"
+        icon="pi pi-plus"
+        onClick={handleAdd}
+        disabled={!newAnswerText.value.trim()}
+        severity="success"
+        size="small"
+      />
     </div>
   );
 }

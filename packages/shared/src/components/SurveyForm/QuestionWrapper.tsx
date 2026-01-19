@@ -1,6 +1,6 @@
 import * as React from "react";
-import { cn } from "../../utils";
-import { Label } from "../ui/label";
+import { Card } from "primereact/card";
+import { Message } from "primereact/message";
 import type { Question } from "../../types";
 
 interface QuestionWrapperProps {
@@ -16,35 +16,21 @@ export function QuestionWrapper({
   children,
   className,
 }: QuestionWrapperProps) {
+  const title = (
+    <span>
+      {question.text}
+      {question.required && (
+        <span className="text-red-500 ml-1">*</span>
+      )}
+    </span>
+  );
+
   return (
-    <div
-      className={cn(
-        "space-y-3 p-4 rounded-lg border bg-card",
-        error && "border-destructive",
-        className
-      )}
-    >
-      <div className="space-y-1">
-        <Label className="text-base font-medium">
-          {question.text}
-          {question.required && (
-            <span className="text-destructive ml-1">*</span>
-          )}
-        </Label>
-        {question.description && (
-          <p className="text-sm text-muted-foreground">
-            {question.description}
-          </p>
-        )}
-      </div>
-
-      <div className="pt-1">{children}</div>
-
+    <Card title={title} subTitle={question.description} className={className}>
+      <div className="pt-2">{children}</div>
       {error && (
-        <p className="text-sm text-destructive" role="alert">
-          {error}
-        </p>
+        <Message severity="error" text={error} className="mt-2 w-full" />
       )}
-    </div>
+    </Card>
   );
 }

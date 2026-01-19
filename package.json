@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "pnpm --filter @survey/builder dev",
+    "dev:all": "pnpm --parallel --filter @survey/builder --filter @survey/app dev",
     "dev:builder": "pnpm --filter @survey/builder dev",
     "dev:survey": "pnpm --filter @survey/app dev",
     "build": "pnpm -r build",

@@ -1,15 +1,9 @@
 import { useSignals } from "@preact/signals-react/runtime";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  Button,
-  type Question,
-} from "@survey/shared";
-import { GripVertical, Pencil, Trash2, CircleDot, CheckSquare, Type, Star } from "lucide-react";
+import { Card } from "primereact/card";
+import { Button } from "primereact/button";
+import type { Question } from "@survey/shared";
 import { AnswerList } from "./AnswerList";
 import { deleteQuestion, openEditQuestionDialog } from "@/store";
 
@@ -18,18 +12,18 @@ interface QuestionCardProps {
   index: number;
 }
 
-const typeIcons: Record<string, typeof CircleDot> = {
-  "single-choice": CircleDot,
-  "multiple-choice": CheckSquare,
-  "text-input": Type,
-  "rating-scale": Star,
-};
-
 const typeLabels: Record<string, string> = {
   "single-choice": "Single choice",
   "multiple-choice": "Multiple choice",
   "text-input": "Text input",
   "rating-scale": "Rating scale",
+};
+
+const typeIcons: Record<string, string> = {
+  "single-choice": "pi pi-circle",
+  "multiple-choice": "pi pi-check-square",
+  "text-input": "pi pi-pencil",
+  "rating-scale": "pi pi-star",
 };
 
 export function QuestionCard({ question, index }: QuestionCardProps) {
@@ -50,67 +44,62 @@ export function QuestionCard({ question, index }: QuestionCardProps) {
     opacity: isDragging ? 0.5 : 1,
   };
 
-  const TypeIcon = typeIcons[question.type] || CircleDot;
   const hasAnswers = question.type === "single-choice" || question.type === "multiple-choice";
 
-  return (
-    <Card ref={setNodeRef} style={style} className="mb-4">
-      <CardHeader className="pb-3">
-        <div className="flex items-start gap-3">
-          <button
-            {...attributes}
-            {...listeners}
-            className="cursor-grab hover:bg-muted p-1 rounded mt-1"
-          >
-            <GripVertical className="h-5 w-5 text-muted-foreground" />
-          </button>
+  const title = (
+    <div className="flex items-start gap-3">
+      <button
+        {...attributes}
+        {...listeners}
+        className="cursor-grab hover:bg-gray-100 p-2 rounded mt-1"
+      >
+        <i className="pi pi-bars text-gray-400"></i>
+      </button>
 
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-1">
-              <span className="text-sm font-medium text-muted-foreground">
-                Q{index + 1}
-              </span>
-              <TypeIcon className="h-4 w-4 text-muted-foreground" />
-              <span className="text-xs text-muted-foreground">
-                {typeLabels[question.type] || question.type}
-              </span>
-              {question.required && (
-                <span className="text-xs text-destructive">Required</span>
-              )}
-            </div>
-            <CardTitle className="text-lg">{question.text}</CardTitle>
-            {question.description && (
-              <p className="text-sm text-muted-foreground mt-1">
-                {question.description}
-              </p>
-            )}
-          </div>
-
-          <div className="flex items-center gap-1">
-            <Button
-              size="icon"
-              variant="ghost"
-              onClick={() => openEditQuestionDialog(question.id)}
-            >
-              <Pencil className="h-4 w-4" />
-            </Button>
-            <Button
-              size="icon"
-              variant="ghost"
-              className="text-destructive hover:text-destructive"
-              onClick={() => deleteQuestion(question.id)}
-            >
-              <Trash2 className="h-4 w-4" />
-            </Button>
-          </div>
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2 mb-1">
+          <span className="text-sm font-medium text-gray-500">
+            Q{index + 1}
+          </span>
+          <i className={`${typeIcons[question.type] || "pi pi-question"} text-gray-400 text-sm`}></i>
+          <span className="text-xs text-gray-500">
+            {typeLabels[question.type] || question.type}
+          </span>
+          {question.required && (
+            <span className="text-xs text-red-500 font-medium">Required</span>
+          )}
         </div>
-      </CardHeader>
+        <span className="text-lg font-semibold">{question.text}</span>
+      </div>
 
-      {hasAnswers && (
-        <CardContent>
-          <AnswerList question={question} />
-        </CardContent>
-      )}
-    </Card>
+      <div className="flex items-center gap-1">
+        <Button
+          icon="pi pi-pencil"
+          rounded
+          text
+          severity="secondary"
+          onClick={() => openEditQuestionDialog(question.id)}
+          tooltip="Edit"
+          tooltipOptions={{ position: 'top' }}
+        />
+        <Button
+          icon="pi pi-trash"
+          rounded
+          text
+          severity="danger"
+          onClick={() => deleteQuestion(question.id)}
+          tooltip="Delete"
+          tooltipOptions={{ position: 'top' }}
+        />
+      </div>
+    </div>
+  );
+
+  return (
+    <div ref={setNodeRef} style={style} className="mb-4">
+      <Card title={title} subTitle={question.description}>
+        {hasAnswers && <AnswerList question={question} />}
+      </Card>
+    </div>
   );
 }

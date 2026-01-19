@@ -1,9 +1,9 @@
 import * as React from "react";
-import { cn } from "../../utils";
+import { Card } from "primereact/card";
+import { Button } from "primereact/button";
+import { ProgressBar } from "primereact/progressbar";
+import { Message } from "primereact/message";
 import { useSurveyForm } from "./hooks/useSurveyForm";
-import { SurveyHeader } from "./SurveyHeader";
-import { SurveyProgress } from "./SurveyProgress";
-import { SurveyFooter } from "./SurveyFooter";
 import { QuestionRenderer } from "./QuestionRenderer";
 import type { SurveyFormProps } from "./SurveyForm.types";
 
@@ -41,20 +41,38 @@ export function SurveyForm({
 
   if (survey.questions.length === 0) {
     return (
-      <div className={cn("p-8 text-center text-muted-foreground", className)}>
-        <p>This survey has no questions.</p>
+      <div className={className}>
+        <Message
+          severity="info"
+          text="This survey has no questions."
+          className="w-full justify-center"
+        />
       </div>
     );
   }
 
   return (
-    <div className={cn("space-y-6", className)}>
-      <SurveyHeader metadata={survey.metadata} />
+    <div className={className}>
+      {/* Header */}
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold mb-2">{survey.metadata.title}</h1>
+        {survey.metadata.description && (
+          <p className="text-gray-500">{survey.metadata.description}</p>
+        )}
+      </div>
 
+      {/* Progress */}
       {survey.settings.showProgressBar && (
-        <SurveyProgress progress={progress} />
+        <div className="mb-6">
+          <div className="flex justify-between text-sm text-gray-500 mb-2">
+            <span>Progress</span>
+            <span>{progress}%</span>
+          </div>
+          <ProgressBar value={progress} showValue={false} className="h-2" />
+        </div>
       )}
 
+      {/* Questions */}
       <div className="space-y-4">
         {survey.questions.map((question) => (
           <QuestionRenderer
@@ -68,12 +86,17 @@ export function SurveyForm({
         ))}
       </div>
 
-      <SurveyFooter
-        mode={mode}
-        submitText={survey.settings.submitButtonText}
-        isSubmitting={isSubmitting}
-        onSubmit={handleFormSubmit}
-      />
+      {/* Submit */}
+      <div className="flex justify-end mt-6">
+        <Button
+          label={isSubmitting ? "Submitting..." : survey.settings.submitButtonText}
+          icon={isSubmitting ? "pi pi-spin pi-spinner" : "pi pi-check"}
+          onClick={handleFormSubmit}
+          disabled={mode === "preview" || isSubmitting}
+          severity="success"
+          size="large"
+        />
+      </div>
     </div>
   );
 }

@@ -1,14 +1,7 @@
 import * as React from "react";
+import { RadioButton } from "primereact/radiobutton";
+import { Dropdown } from "primereact/dropdown";
 import type { QuestionFormProps, SingleChoiceQuestion as SingleChoiceQuestionType } from "../../../types";
-import { RadioGroup, RadioGroupItem } from "../../ui/radio-group";
-import { Label } from "../../ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../../ui/select";
 
 export function SingleChoiceQuestion({
   question,
@@ -19,41 +12,40 @@ export function SingleChoiceQuestion({
   const q = question as SingleChoiceQuestionType;
 
   if (q.answerType === "dropdown") {
+    const options = q.answers.map((answer) => ({
+      label: answer.text,
+      value: answer.id,
+    }));
+
     return (
-      <Select
+      <Dropdown
         value={value ?? ""}
-        onValueChange={onChange}
+        onChange={(e) => onChange(e.value)}
+        options={options}
         disabled={disabled}
-      >
-        <SelectTrigger className="w-full">
-          <SelectValue placeholder="Select an option" />
-        </SelectTrigger>
-        <SelectContent>
-          {q.answers.map((answer) => (
-            <SelectItem key={answer.id} value={answer.id}>
-              {answer.text}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+        placeholder="Select an option"
+        className="w-full"
+      />
     );
   }
 
   return (
-    <RadioGroup
-      value={value ?? ""}
-      onValueChange={onChange}
-      disabled={disabled}
-      className="space-y-2"
-    >
+    <div className="flex flex-col gap-3">
       {q.answers.map((answer) => (
-        <div key={answer.id} className="flex items-center space-x-3">
-          <RadioGroupItem value={answer.id} id={answer.id} />
-          <Label htmlFor={answer.id} className="font-normal cursor-pointer">
+        <div key={answer.id} className="flex items-center gap-3">
+          <RadioButton
+            inputId={answer.id}
+            name={question.id}
+            value={answer.id}
+            checked={value === answer.id}
+            onChange={(e) => onChange(e.value)}
+            disabled={disabled}
+          />
+          <label htmlFor={answer.id} className="cursor-pointer">
             {answer.text}
-          </Label>
+          </label>
         </div>
       ))}
-    </RadioGroup>
+    </div>
   );
 }

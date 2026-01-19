@@ -1,10 +1,6 @@
 import * as React from "react";
+import { Dropdown } from "primereact/dropdown";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
   questionRegistry,
   type QuestionType,
 } from "@survey/shared";
@@ -21,29 +17,20 @@ export function QuestionTypeSelector({
   disabled,
 }: QuestionTypeSelectorProps) {
   const questionTypes = questionRegistry.getAll();
+  
+  const options = questionTypes.map((config) => ({
+    label: config.label,
+    value: config.type,
+  }));
 
   return (
-    <Select
+    <Dropdown
       value={value}
-      onValueChange={(v) => onChange(v as QuestionType)}
+      onChange={(e) => onChange(e.value as QuestionType)}
+      options={options}
       disabled={disabled}
-    >
-      <SelectTrigger className="w-full">
-        <SelectValue placeholder="Select question type" />
-      </SelectTrigger>
-      <SelectContent>
-        {questionTypes.map((config) => {
-          const Icon = config.icon;
-          return (
-            <SelectItem key={config.type} value={config.type}>
-              <div className="flex items-center gap-2">
-                <Icon className="h-4 w-4" />
-                <span>{config.label}</span>
-              </div>
-            </SelectItem>
-          );
-        })}
-      </SelectContent>
-    </Select>
+      placeholder="Select question type"
+      className="w-full"
+    />
   );
 }

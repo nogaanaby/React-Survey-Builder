@@ -1,53 +1,41 @@
-"use client";
-
 import * as React from "react";
-import * as SliderPrimitive from "@radix-ui/react-slider";
-
+import { Slider as PrimeSlider } from "primereact/slider";
+import type { SliderProps as PrimeSliderProps } from "primereact/slider";
 import { cn } from "../../utils";
 
-function Slider({
-  className,
+export interface SliderProps extends Omit<PrimeSliderProps, "value" | "onChange"> {
+  value?: number[];
+  onValueChange?: (value: number[]) => void;
+  defaultValue?: number[];
+}
+
+function Slider({ 
+  className, 
+  value, 
+  onValueChange, 
   defaultValue,
-  value,
   min = 0,
   max = 100,
-  ...props
-}: React.ComponentPropsWithoutRef<typeof SliderPrimitive.Root>) {
-  const _values = React.useMemo(
-    () => value ?? defaultValue ?? [min, max],
-    [value, defaultValue, min, max]
-  );
+  ...props 
+}: SliderProps) {
+  const [internalValue, setInternalValue] = React.useState(defaultValue?.[0] ?? min);
+  const currentValue = value?.[0] ?? internalValue;
+
+  const handleChange = (e: { value: number | [number, number] }) => {
+    const newValue = Array.isArray(e.value) ? e.value[0] : e.value;
+    setInternalValue(newValue);
+    onValueChange?.([newValue]);
+  };
 
   return (
-    <SliderPrimitive.Root
-      data-slot="slider"
-      defaultValue={defaultValue}
-      value={value}
+    <PrimeSlider
+      value={currentValue}
+      onChange={handleChange}
       min={min}
       max={max}
-      className={cn(
-        "relative flex w-full touch-none items-center select-none data-[disabled]:opacity-50",
-        className
-      )}
+      className={cn("w-full", className)}
       {...props}
-    >
-      <SliderPrimitive.Track
-        data-slot="slider-track"
-        className="bg-muted relative h-1.5 w-full grow overflow-hidden rounded-full"
-      >
-        <SliderPrimitive.Range
-          data-slot="slider-range"
-          className="bg-primary absolute h-full"
-        />
-      </SliderPrimitive.Track>
-      {Array.from({ length: _values.length }, (_, index) => (
-        <SliderPrimitive.Thumb
-          data-slot="slider-thumb"
-          key={index}
-          className="border-primary/50 bg-background focus-visible:ring-ring block size-4 rounded-full border shadow-sm transition-[color,box-shadow] focus-visible:ring-[3px] focus-visible:outline-hidden disabled:pointer-events-none"
-        />
-      ))}
-    </SliderPrimitive.Root>
+    />
   );
 }
 

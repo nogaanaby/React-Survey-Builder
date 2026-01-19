@@ -1,7 +1,7 @@
 import * as React from "react";
+import { InputText } from "primereact/inputtext";
+import { InputTextarea } from "primereact/inputtextarea";
 import type { QuestionFormProps, TextInputQuestion as TextInputQuestionType } from "../../../types";
-import { Input } from "../../ui/input";
-import { Textarea } from "../../ui/textarea";
 
 export function TextInputQuestion({
   question,
@@ -13,25 +13,26 @@ export function TextInputQuestion({
 
   if (q.config.multiline || q.answerType === "textarea") {
     return (
-      <Textarea
+      <InputTextarea
         value={value ?? ""}
         onChange={(e) => onChange(e.target.value)}
         placeholder={q.config.placeholder}
         disabled={disabled}
         rows={q.config.rows ?? 3}
         maxLength={q.config.maxLength}
+        className="w-full"
       />
     );
   }
 
   return (
-    <Input
-      type="text"
+    <InputText
       value={value ?? ""}
       onChange={(e) => onChange(e.target.value)}
       placeholder={q.config.placeholder}
       disabled={disabled}
       maxLength={q.config.maxLength}
+      className="w-full"
     />
   );
 }

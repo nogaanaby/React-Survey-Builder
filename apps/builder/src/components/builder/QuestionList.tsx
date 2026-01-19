@@ -13,6 +13,7 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
+import { Message } from "primereact/message";
 import { QuestionCard } from "./QuestionCard";
 import { survey, reorderQuestions } from "@/store";
 
@@ -38,9 +39,12 @@ export function QuestionList() {
 
   if (questions.length === 0) {
     return (
-      <div className="text-center py-12 text-muted-foreground">
-        <p className="text-lg">No questions yet</p>
-        <p className="text-sm">Click "Add Question" to get started</p>
+      <div className="text-center py-12">
+        <Message
+          severity="info"
+          text="No questions yet. Click 'Add Question' to get started."
+          className="w-full justify-center"
+        />
       </div>
     );
   }
@@ -52,7 +56,7 @@ export function QuestionList() {
       onDragEnd={handleDragEnd}
     >
       <SortableContext items={questionIds} strategy={verticalListSortingStrategy}>
-        <div className="space-y-4">
+        <div>
           {questions.map((question, index) => (
             <QuestionCard key={question.id} question={question} index={index} />
           ))}

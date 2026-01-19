@@ -1,20 +1,12 @@
 import { useEffect } from "react";
 import { signal, computed } from "@preact/signals-react";
 import { useSignals } from "@preact/signals-react/runtime";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-  Button,
-  Input,
-  Label,
-  Checkbox,
-  type QuestionType,
-} from "@survey/shared";
-import { QuestionTypeSelector } from "@survey/builder-components";
+import { Dialog } from "primereact/dialog";
+import { Button } from "primereact/button";
+import { InputText } from "primereact/inputtext";
+import { Checkbox } from "primereact/checkbox";
+import { Dropdown } from "primereact/dropdown";
+import { questionRegistry, type QuestionType } from "@survey/shared";
 import {
   isQuestionDialogOpen,
   editingQuestionId,
@@ -53,8 +45,7 @@ export function QuestionFormDialog() {
     }
   }, [isQuestionDialogOpen.value, editingQuestionId.value]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = () => {
     if (!questionText.value.trim()) return;
 
     if (isEditing.value && editingQuestionId.value) {
@@ -66,85 +57,105 @@ export function QuestionFormDialog() {
       });
     } else {
       addQuestion(questionType.value, questionText.value.trim());
-      // Update the newly added question with additional fields
-      // Note: This is simplified; in production, you'd pass all fields to addQuestion
     }
 
     closeQuestionDialog();
   };
 
-  const handleOpenChange = (open: boolean) => {
-    if (!open) closeQuestionDialog();
-  };
+  const questionTypeOptions = questionRegistry.getAll().map((config) => ({
+    label: config.label,
+    value: config.type,
+  }));
+
+  const footerContent = (
+    <div className="flex justify-end gap-2">
+      <Button 
+        label="Cancel" 
+        icon="pi pi-times" 
+        onClick={closeQuestionDialog} 
+        severity="secondary"
+        outlined
+      />
+      <Button 
+        label={isEditing.value ? "Save Changes" : "Add Question"} 
+        icon="pi pi-check" 
+        onClick={handleSubmit}
+        disabled={!questionText.value.trim()}
+        severity="success"
+      />
+    </div>
+  );
 
   return (
-    <Dialog open={isQuestionDialogOpen.value} onOpenChange={handleOpenChange}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>
-            {isEditing.value ? "Edit Question" : "Add New Question"}
-          </DialogTitle>
-          <DialogDescription>
-            {isEditing.value
-              ? "Modify the question details below."
-              : "Enter the question details and select the type."}
-          </DialogDescription>
-        </DialogHeader>
+    <Dialog
+      visible={isQuestionDialogOpen.value}
+      onHide={closeQuestionDialog}
+      header={isEditing.value ? "Edit Question" : "Add New Question"}
+      footer={footerContent}
+      style={{ width: '500px' }}
+      modal
+      draggable={false}
+    >
+      <p className="text-gray-500 mb-4">
+        {isEditing.value
+          ? "Modify the question details below."
+          : "Enter the question details and select the type."}
+      </p>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="question-text">Question Text</Label>
-            <Input
-              id="question-text"
-              placeholder="Enter your question..."
-              value={questionText.value}
-              onChange={(e) => (questionText.value = e.target.value)}
-              autoFocus
-            />
-          </div>
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-2">
+          <label htmlFor="question-text" className="font-medium">
+            Question Text
+          </label>
+          <InputText
+            id="question-text"
+            placeholder="Enter your question..."
+            value={questionText.value}
+            onChange={(e) => (questionText.value = e.target.value)}
+            className="w-full"
+            autoFocus
+          />
+        </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="question-description">Description (optional)</Label>
-            <Input
-              id="question-description"
-              placeholder="Add a description..."
-              value={questionDescription.value}
-              onChange={(e) => (questionDescription.value = e.target.value)}
-            />
-          </div>
+        <div className="flex flex-col gap-2">
+          <label htmlFor="question-description" className="font-medium">
+            Description (optional)
+          </label>
+          <InputText
+            id="question-description"
+            placeholder="Add a description..."
+            value={questionDescription.value}
+            onChange={(e) => (questionDescription.value = e.target.value)}
+            className="w-full"
+          />
+        </div>
 
-          <div className="space-y-2">
-            <Label>Question Type</Label>
-            <QuestionTypeSelector
-              value={questionType.value}
-              onChange={(v) => (questionType.value = v)}
-              disabled={isEditing.value}
-            />
-          </div>
+        <div className="flex flex-col gap-2">
+          <label htmlFor="question-type" className="font-medium">
+            Question Type
+          </label>
+          <Dropdown
+            id="question-type"
+            value={questionType.value}
+            onChange={(e) => (questionType.value = e.value)}
+            options={questionTypeOptions}
+            placeholder="Select question type"
+            disabled={isEditing.value}
+            className="w-full"
+          />
+        </div>
 
-          <div className="flex items-center gap-2">
-            <Checkbox
-              id="question-required"
-              checked={questionRequired.value}
-              onCheckedChange={(checked) =>
-                (questionRequired.value = checked === true)
-              }
-            />
-            <Label htmlFor="question-required" className="font-normal">
-              Required question
-            </Label>
-          </div>
-
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={closeQuestionDialog}>
-              Cancel
-            </Button>
-            <Button type="submit" disabled={!questionText.value.trim()}>
-              {isEditing.value ? "Save Changes" : "Add Question"}
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
+        <div className="flex items-center gap-2">
+          <Checkbox
+            inputId="question-required"
+            checked={questionRequired.value}
+            onChange={(e) => (questionRequired.value = e.checked ?? false)}
+          />
+          <label htmlFor="question-required" className="cursor-pointer">
+            Required question
+          </label>
+        </div>
+      </div>
     </Dialog>
   );
 }

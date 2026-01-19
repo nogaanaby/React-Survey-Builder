@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
+import { Card } from "primereact/card";
+import { Button } from "primereact/button";
+import { Panel } from "primereact/panel";
+import { ProgressSpinner } from "primereact/progressspinner";
 import {
   SurveyForm,
-  Card,
-  CardContent,
   type Survey,
   type SurveyResponse,
   createEmptySurvey,
@@ -42,36 +44,31 @@ export function SurveyPage() {
 
   if (!survey) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <p className="text-muted-foreground">Loading survey...</p>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <ProgressSpinner />
       </div>
     );
   }
 
   if (submitted) {
     return (
-      <div className="min-h-screen bg-background">
-        <div className="max-w-2xl mx-auto p-6">
-          <Card>
-            <CardContent className="pt-6 text-center space-y-4">
-              <div className="text-5xl">🎉</div>
-              <h1 className="text-2xl font-bold">
-                {survey.settings.thankYouMessage}
-              </h1>
-              <p className="text-muted-foreground">
-                Your response has been recorded.
-              </p>
-              {response && (
-                <details className="text-left mt-6">
-                  <summary className="cursor-pointer text-sm text-muted-foreground">
-                    View your response (debug)
-                  </summary>
-                  <pre className="mt-2 text-xs bg-muted p-4 rounded-md overflow-auto">
-                    {JSON.stringify(response, null, 2)}
-                  </pre>
-                </details>
-              )}
-            </CardContent>
+      <div className="min-h-screen bg-gray-50 p-6">
+        <div className="max-w-2xl mx-auto">
+          <Card className="text-center">
+            <div className="text-6xl mb-4">🎉</div>
+            <h1 className="text-2xl font-bold mb-2">
+              {survey.settings.thankYouMessage}
+            </h1>
+            <p className="text-gray-500 mb-4">
+              Your response has been recorded.
+            </p>
+            {response && (
+              <Panel header="Your Response (Debug)" toggleable collapsed className="text-left mt-4">
+                <pre className="text-xs bg-gray-100 p-4 rounded-md overflow-auto">
+                  {JSON.stringify(response, null, 2)}
+                </pre>
+              </Panel>
+            )}
           </Card>
         </div>
       </div>
@@ -79,19 +76,17 @@ export function SurveyPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="max-w-2xl mx-auto p-6">
+    <div className="min-h-screen bg-gray-50 p-6">
+      <div className="max-w-2xl mx-auto">
         <Card>
-          <CardContent className="pt-6">
-            <SurveyForm
-              survey={survey}
-              mode="submit"
-              onSubmit={handleSubmit}
-              onValidationError={(errors) => {
-                console.log("Validation errors:", errors);
-              }}
-            />
-          </CardContent>
+          <SurveyForm
+            survey={survey}
+            mode="submit"
+            onSubmit={handleSubmit}
+            onValidationError={(errors) => {
+              console.log("Validation errors:", errors);
+            }}
+          />
         </Card>
       </div>
     </div>

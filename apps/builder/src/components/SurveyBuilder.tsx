@@ -1,17 +1,8 @@
+import { useState } from "react";
 import { useSignals } from "@preact/signals-react/runtime";
-import {
-  Button,
-  Tabs,
-  TabsList,
-  TabsTrigger,
-  TabsContent,
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-} from "@survey/shared";
-import { Plus, Hammer, Eye, Code } from "lucide-react";
+import { Card } from "primereact/card";
+import { Button } from "primereact/button";
+import { TabView, TabPanel } from "primereact/tabview";
 import { QuestionList } from "./builder/QuestionList";
 import { QuestionFormDialog } from "./builder/QuestionFormDialog";
 import { PreviewPanel } from "./preview/PreviewPanel";
@@ -24,61 +15,43 @@ import {
 
 export function SurveyBuilder() {
   useSignals();
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const title = (
+    <div className="flex justify-between items-center">
+      <span>{survey.value.metadata.title || "Survey Builder"}</span>
+      <Button 
+        label="Add Question" 
+        icon="pi pi-plus" 
+        onClick={openAddQuestionDialog}
+        severity="success"
+      />
+    </div>
+  );
+
+  const subTitle = questionCount.value === 0
+    ? "Create your survey by adding questions"
+    : `${questionCount.value} question${questionCount.value === 1 ? "" : "s"}`;
 
   return (
-    <Card className="min-h-screen border-0 rounded-none bg-background">
-      <CardHeader className="max-w-5xl mx-auto w-full">
-        <CardTitle className="text-3xl">
-          {survey.value.metadata.title || "Survey Builder"}
-        </CardTitle>
-        <CardDescription>
-          {questionCount.value === 0
-            ? "Create your survey by adding questions"
-            : `${questionCount.value} question${questionCount.value === 1 ? "" : "s"}`}
-        </CardDescription>
-      </CardHeader>
-
-      <CardContent className="max-w-5xl mx-auto w-full">
-        <Tabs defaultValue="builder" className="w-full">
-          <Card className="mb-6 py-3">
-            <CardContent className="flex items-center justify-between py-0">
-              <TabsList>
-                <TabsTrigger value="builder">
-                  <Hammer className="h-4 w-4 mr-2" />
-                  Builder
-                </TabsTrigger>
-                <TabsTrigger value="preview">
-                  <Eye className="h-4 w-4 mr-2" />
-                  Preview
-                </TabsTrigger>
-                <TabsTrigger value="json">
-                  <Code className="h-4 w-4 mr-2" />
-                  JSON
-                </TabsTrigger>
-              </TabsList>
-
-              <Button onClick={openAddQuestionDialog}>
-                <Plus className="h-4 w-4 mr-2" />
-                Add Question
-              </Button>
-            </CardContent>
-          </Card>
-
-          <TabsContent value="builder">
-            <QuestionList />
-          </TabsContent>
-
-          <TabsContent value="preview">
-            <PreviewPanel />
-          </TabsContent>
-
-          <TabsContent value="json">
-            <JsonPreview />
-          </TabsContent>
-        </Tabs>
-      </CardContent>
+    <div className="min-h-screen bg-gray-50 p-6">
+      <div className="max-w-5xl mx-auto">
+        <Card title={title} subTitle={subTitle}>
+          <TabView activeIndex={activeIndex} onTabChange={(e) => setActiveIndex(e.index)}>
+            <TabPanel header="Builder" leftIcon="pi pi-wrench mr-2">
+              <QuestionList />
+            </TabPanel>
+            <TabPanel header="Preview" leftIcon="pi pi-eye mr-2">
+              <PreviewPanel />
+            </TabPanel>
+            <TabPanel header="JSON" leftIcon="pi pi-code mr-2">
+              <JsonPreview />
+            </TabPanel>
+          </TabView>
+        </Card>
+      </div>
 
       <QuestionFormDialog />
-    </Card>
+    </div>
   );
 }

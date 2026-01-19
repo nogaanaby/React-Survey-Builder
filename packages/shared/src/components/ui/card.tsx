@@ -1,59 +1,48 @@
 import * as React from "react";
-
+import { Card as PrimeCard } from "primereact/card";
 import { cn } from "../../utils";
 
-function Card({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+function Card({ className, children, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
-    <div
-      data-slot="card"
-      className={cn(
-        "bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm",
-        className
-      )}
-      {...props}
-    />
+    <PrimeCard className={cn(className)} {...props}>
+      {children}
+    </PrimeCard>
   );
 }
 
 function CardHeader({
   className,
+  children,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
   return (
-    <div
-      data-slot="card-header"
-      className={cn(
-        "@container/card-header grid auto-rows-min grid-rows-[auto_auto] items-start gap-2 px-6 has-data-[slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6",
-        className
-      )}
-      {...props}
-    />
+    <div className={cn("flex flex-col space-y-1.5 p-6", className)} {...props}>
+      {children}
+    </div>
   );
 }
 
 function CardTitle({
   className,
+  children,
   ...props
-}: React.HTMLAttributes<HTMLDivElement>) {
+}: React.HTMLAttributes<HTMLHeadingElement>) {
   return (
-    <div
-      data-slot="card-title"
-      className={cn("leading-none font-semibold", className)}
-      {...props}
-    />
+    <h3 className={cn("text-2xl font-semibold leading-none tracking-tight", className)} {...props}>
+      {children}
+    </h3>
   );
 }
 
 function CardDescription({
   className,
+  children,
   ...props
-}: React.HTMLAttributes<HTMLDivElement>) {
+}: React.HTMLAttributes<HTMLParagraphElement>) {
   return (
-    <div
-      data-slot="card-description"
-      className={cn("text-muted-foreground text-sm", className)}
-      {...props}
-    />
+    <p className={cn("text-sm text-gray-500", className)} {...props}>
+      {children}
+    </p>
   );
 }
 
@@ -62,36 +51,31 @@ function CardAction({
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
   return (
-    <div
-      data-slot="card-action"
-      className={cn(
-        "col-start-2 row-span-2 row-start-1 self-start justify-self-end",
-        className
-      )}
-      {...props}
-    />
+    <div className={cn("ml-auto", className)} {...props} />
   );
 }
 
 function CardContent({
   className,
+  children,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
   return (
-    <div data-slot="card-content" className={cn("px-6", className)} {...props} />
+    <div className={cn("p-6 pt-0", className)} {...props}>
+      {children}
+    </div>
   );
 }
 
 function CardFooter({
   className,
+  children,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
   return (
-    <div
-      data-slot="card-footer"
-      className={cn("flex items-center px-6 [.border-t]:pt-6", className)}
-      {...props}
-    />
+    <div className={cn("flex items-center p-6 pt-0", className)} {...props}>
+      {children}
+    </div>
   );
 }
 

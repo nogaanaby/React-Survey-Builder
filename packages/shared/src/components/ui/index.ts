@@ -1,11 +1,11 @@
-export { Button, buttonVariants, type ButtonProps } from "./button";
+export { Button, type ButtonProps } from "./button";
 export { Input, type InputProps } from "./input";
 export { Textarea, type TextareaProps } from "./textarea";
-export { Label } from "./label";
-export { Checkbox } from "./checkbox";
-export { RadioGroup, RadioGroupItem } from "./radio-group";
-export { Slider } from "./slider";
-export { Progress } from "./progress";
+export { Label, type LabelProps } from "./label";
+export { Checkbox, type CheckboxProps } from "./checkbox";
+export { RadioGroup, RadioGroupItem, type RadioGroupProps, type RadioGroupItemProps } from "./radio-group";
+export { Slider, type SliderProps } from "./slider";
+export { Progress, type ProgressProps } from "./progress";
 export {
   Select,
   SelectContent,
@@ -17,6 +17,9 @@ export {
   SelectSeparator,
   SelectTrigger,
   SelectValue,
+  SimpleSelect,
+  type SelectProps,
+  type SimpleSelectProps,
 } from "./select";
 export {
   Dialog,
@@ -29,6 +32,8 @@ export {
   DialogPortal,
   DialogTitle,
   DialogTrigger,
+  type DialogProps,
+  type DialogContentProps,
 } from "./dialog";
 export {
   Card,
@@ -39,4 +44,4 @@ export {
   CardDescription,
   CardContent,
 } from "./card";
-export { Tabs, TabsList, TabsTrigger, TabsContent } from "./tabs";
+export { Tabs, TabsList, TabsTrigger, TabsContent, type TabsProps } from "./tabs";

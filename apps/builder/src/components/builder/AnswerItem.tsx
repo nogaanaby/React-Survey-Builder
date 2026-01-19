@@ -2,13 +2,9 @@ import { useSignal } from "@preact/signals-react";
 import { useSignals } from "@preact/signals-react/runtime";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import {
-  Button,
-  Input,
-  type Answer,
-  type QuestionType,
-} from "@survey/shared";
-import { GripVertical, Pencil, Trash2, Check, X, Circle, Square } from "lucide-react";
+import { InputText } from "primereact/inputtext";
+import { Button } from "primereact/button";
+import type { Answer, QuestionType } from "@survey/shared";
 import { updateAnswer, deleteAnswer } from "@/store";
 
 interface AnswerItemProps {
@@ -54,63 +50,70 @@ export function AnswerItem({ answer, questionId, questionType }: AnswerItemProps
     else if (e.key === "Escape") handleCancel();
   };
 
+  const answerIcon = questionType === "single-choice" ? "pi pi-circle" : "pi pi-stop";
+
   return (
     <div
       ref={setNodeRef}
       style={style}
-      className="flex items-center gap-2 p-2 bg-muted/50 rounded-md group"
+      className="flex items-center gap-2 p-2 bg-gray-50 rounded-md group hover:bg-gray-100 transition-colors"
     >
       <button
         {...attributes}
         {...listeners}
-        className="cursor-grab hover:bg-muted p-1 rounded opacity-0 group-hover:opacity-100 transition-opacity"
+        className="cursor-grab hover:bg-gray-200 p-1 rounded opacity-0 group-hover:opacity-100 transition-opacity"
       >
-        <GripVertical className="h-4 w-4 text-muted-foreground" />
+        <i className="pi pi-bars text-gray-400 text-sm"></i>
       </button>
 
-      {/* Visual indicator for answer type */}
-      {questionType === "single-choice" ? (
-        <Circle className="h-4 w-4 text-muted-foreground" />
-      ) : (
-        <Square className="h-4 w-4 text-muted-foreground rounded-sm" />
-      )}
+      <i className={`${answerIcon} text-gray-400 text-sm`}></i>
 
       {isEditing.value ? (
         <div className="flex-1 flex items-center gap-2">
-          <Input
+          <InputText
             value={editText.value}
             onChange={(e) => (editText.value = e.target.value)}
             onKeyDown={handleKeyDown}
-            className="h-8"
+            className="flex-1 p-inputtext-sm"
             autoFocus
           />
-          <Button size="icon" variant="ghost" className="h-8 w-8" onClick={handleSave}>
-            <Check className="h-4 w-4" />
-          </Button>
-          <Button size="icon" variant="ghost" className="h-8 w-8" onClick={handleCancel}>
-            <X className="h-4 w-4" />
-          </Button>
+          <Button
+            icon="pi pi-check"
+            rounded
+            text
+            severity="success"
+            size="small"
+            onClick={handleSave}
+          />
+          <Button
+            icon="pi pi-times"
+            rounded
+            text
+            severity="secondary"
+            size="small"
+            onClick={handleCancel}
+          />
         </div>
       ) : (
         <>
           <span className="flex-1 text-sm">{answer.text}</span>
           <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
             <Button
-              size="icon"
-              variant="ghost"
-              className="h-8 w-8"
+              icon="pi pi-pencil"
+              rounded
+              text
+              severity="secondary"
+              size="small"
               onClick={() => (isEditing.value = true)}
-            >
-              <Pencil className="h-4 w-4" />
-            </Button>
+            />
             <Button
-              size="icon"
-              variant="ghost"
-              className="h-8 w-8 text-destructive hover:text-destructive"
+              icon="pi pi-trash"
+              rounded
+              text
+              severity="danger"
+              size="small"
               onClick={() => deleteAnswer(questionId, answer.id)}
-            >
-              <Trash2 className="h-4 w-4" />
-            </Button>
+            />
           </div>
         </>
       )}

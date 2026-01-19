@@ -1,9 +1,7 @@
 import * as React from "react";
+import { Slider } from "primereact/slider";
+import { RadioButton } from "primereact/radiobutton";
 import type { QuestionFormProps, RatingScaleQuestion as RatingScaleQuestionType } from "../../../types";
-import { Slider } from "../../ui/slider";
-import { RadioGroup, RadioGroupItem } from "../../ui/radio-group";
-import { Label } from "../../ui/label";
-import { cn } from "../../../utils";
 
 export function RatingScaleQuestion({
   question,
@@ -27,17 +25,18 @@ export function RatingScaleQuestion({
     return (
       <div className="space-y-4">
         <Slider
-          value={value !== undefined ? [value] : [min]}
-          onValueChange={(v) => onChange(v[0])}
+          value={value ?? min}
+          onChange={(e) => onChange(e.value as number)}
           min={min}
           max={max}
           step={step}
           disabled={disabled}
+          className="w-full"
         />
         {showLabels && (
-          <div className="flex justify-between text-sm text-muted-foreground">
+          <div className="flex justify-between text-sm text-gray-500">
             <span>{minLabel || min}</span>
-            <span className="font-medium text-foreground">
+            <span className="font-medium text-gray-900">
               {value ?? min}
             </span>
             <span>{maxLabel || max}</span>
@@ -50,33 +49,28 @@ export function RatingScaleQuestion({
   // Radio button scale
   return (
     <div className="space-y-3">
-      <RadioGroup
-        value={value?.toString() ?? ""}
-        onValueChange={(v) => onChange(parseInt(v, 10))}
-        disabled={disabled}
-        className="flex flex-wrap gap-2"
-      >
+      <div className="flex flex-wrap gap-4">
         {options.map((opt) => (
           <div key={opt} className="flex flex-col items-center">
-            <RadioGroupItem
-              value={opt.toString()}
-              id={`rating-${opt}`}
-              className={cn(
-                "h-10 w-10",
-                value === opt && "border-primary"
-              )}
+            <RadioButton
+              inputId={`rating-${opt}`}
+              name={`rating-${question.id}`}
+              value={opt}
+              checked={value === opt}
+              onChange={(e) => onChange(e.value)}
+              disabled={disabled}
             />
-            <Label
+            <label
               htmlFor={`rating-${opt}`}
               className="text-xs mt-1 cursor-pointer"
             >
               {opt}
-            </Label>
+            </label>
           </div>
         ))}
-      </RadioGroup>
+      </div>
       {showLabels && (
-        <div className="flex justify-between text-sm text-muted-foreground">
+        <div className="flex justify-between text-sm text-gray-500">
           <span>{minLabel}</span>
           <span>{maxLabel}</span>
         </div>

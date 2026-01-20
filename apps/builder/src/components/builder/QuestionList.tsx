@@ -50,6 +50,7 @@ export function QuestionList() {
   }
 
   return (
+  <div className="max-w-3xl mx-auto" >
     <DndContext
       sensors={sensors}
       collisionDetection={closestCenter}
@@ -62,6 +63,7 @@ export function QuestionList() {
           ))}
         </div>
       </SortableContext>
-    </DndContext>
+      </DndContext>
+    </div>
   );
 }

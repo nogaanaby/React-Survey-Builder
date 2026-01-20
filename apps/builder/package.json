@@ -12,23 +12,23 @@
   "dependencies": {
     "@survey/shared": "workspace:*",
     "@survey/builder-components": "workspace:*",
-    "@preact/signals-react": "^2.2.0",
-    "@dnd-kit/core": "^6.3.1",
-    "@dnd-kit/sortable": "^10.0.0",
-    "@dnd-kit/utilities": "^3.2.2",
-    "primereact": "^10.8.5",
-    "primeicons": "^7.0.0",
-    "lucide-react": "^0.562.0",
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+    "@preact/signals-react": "3.6.1",
+    "@dnd-kit/core": "6.3.1",
+    "@dnd-kit/sortable": "10.0.0",
+    "@dnd-kit/utilities": "3.2.2",
+    "primereact": "10.9.7",
+    "primeicons": "7.0.0",
+    "lucide-react": "0.562.0",
+    "react": "19.2.3",
+    "react-dom": "19.2.3"
   },
   "devDependencies": {
-    "@tailwindcss/vite": "^4.1.18",
-    "@types/react": "^19.2.5",
-    "@types/react-dom": "^19.2.3",
-    "@vitejs/plugin-react": "^5.1.1",
-    "tailwindcss": "^4.1.18",
-    "typescript": "^5.8.3",
-    "vite": "^7.2.4"
+    "@tailwindcss/vite": "4.1.18",
+    "@types/react": "19.2.8",
+    "@types/react-dom": "19.2.3",
+    "@vitejs/plugin-react": "5.1.2",
+    "tailwindcss": "4.1.18",
+    "typescript": "5.9.3",
+    "vite": "7.3.1"
   }
 }

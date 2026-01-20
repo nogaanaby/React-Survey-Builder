@@ -40,9 +40,10 @@ export type {
 
 // Survey types
 export type {
+  Language,
   SurveyMetadata,
   SurveySettings,
   Survey,
   SurveyData,
 } from "./survey";
-export { defaultSurveySettings, createEmptySurvey } from "./survey";
+export { availableLanguages, defaultSurveySettings, createEmptySurvey } from "./survey";

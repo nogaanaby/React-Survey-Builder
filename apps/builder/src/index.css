@@ -11,13 +11,15 @@
 
 /* Custom overrides for green theme */
 :root {
-  --primary-color: #10b981;
-  --primary-color-text: #ffffff;
-  --surface-ground: #f8fafc;
-  --surface-card: #ffffff;
-  --surface-border: #e2e8f0;
-  --text-color: #1e293b;
-  --text-color-secondary: #64748b;
+  --primary-color: #C5D89D;
+  --secondary-color: #FBD47D;
+  --primary-color-text: #12130E;
+  --surface-ground: #F6F0D7;
+  --surface-card: #FBF8EB;
+  --surface-border: #F8E9C1;
+  --text-color: #12130E;
+  --text-color-secondary: #89986D;
+  --surface-border-secondary: #C1C9B8;
 }
 
 /* Tailwind base styles */

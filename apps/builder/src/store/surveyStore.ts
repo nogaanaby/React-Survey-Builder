@@ -11,7 +11,14 @@ const loadFromStorage = (): Survey => {
     if (!stored) return createEmptySurvey("My Survey");
 
     const data = JSON.parse(stored);
-    return data.survey || createEmptySurvey("My Survey");
+    const loadedSurvey = data.survey || createEmptySurvey("My Survey");
+    
+    // Ensure languages array exists (for backward compatibility)
+    if (!loadedSurvey.metadata.languages) {
+      loadedSurvey.metadata.languages = [{ code: "en", name: "English" }];
+    }
+    
+    return loadedSurvey;
   } catch (error) {
     console.error("Failed to load survey data from storage:", error);
     return createEmptySurvey("My Survey");

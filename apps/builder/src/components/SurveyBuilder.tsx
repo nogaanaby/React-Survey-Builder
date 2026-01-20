@@ -7,6 +7,7 @@ import { QuestionList } from "./builder/QuestionList";
 import { QuestionFormDialog } from "./builder/QuestionFormDialog";
 import { PreviewPanel } from "./preview/PreviewPanel";
 import { JsonPreview } from "./json-preview/JsonPreview";
+import { SurveySettingsPanel } from "./settings/SurveySettingsPanel";
 import {
   survey,
   questionCount,
@@ -35,9 +36,12 @@ export function SurveyBuilder() {
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-5xl mx-auto">
+      <div className="mx-auto">
         <Card title={title} subTitle={subTitle}>
           <TabView activeIndex={activeIndex} onTabChange={(e) => setActiveIndex(e.index)}>
+            <TabPanel header="Settings" leftIcon="pi pi-cog mr-2">
+              <SurveySettingsPanel />
+            </TabPanel>
             <TabPanel header="Builder" leftIcon="pi pi-wrench mr-2">
               <QuestionList />
             </TabPanel>
